@@ -1,9 +1,12 @@
+use unicode_names2::name;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScalarInfo {
     pub scalar_index: usize,
     pub byte_index: usize,
     pub character: char,
     pub code_point: u32,
+    pub unicode_name: Option<String>,
     pub utf8_bytes: Vec<u8>,
 }
 
@@ -34,6 +37,7 @@ pub fn inspect_scalars(input: &str) -> Vec<ScalarInfo> {
                 byte_index,
                 character,
                 code_point: character as u32,
+                unicode_name: name(character).map(|value| value.to_string()),
                 utf8_bytes: encoded.as_bytes().to_vec(),
             }
         })
@@ -52,6 +56,10 @@ mod tests {
         assert_eq!(result[0].character, 'A');
         assert_eq!(result[0].code_point, 0x0041);
         assert_eq!(result[0].code_point_label(), "U+0041");
+        assert_eq!(
+            result[0].unicode_name.as_deref(),
+            Some("LATIN CAPITAL LETTER A")
+        );
         assert_eq!(result[0].utf8_bytes, vec![0x41]);
         assert_eq!(result[0].byte_index, 0);
     }
@@ -63,6 +71,10 @@ mod tests {
         assert_eq!(result.len(), 1);
         assert_eq!(result[0].character, 'é');
         assert_eq!(result[0].code_point, 0x00E9);
+        assert_eq!(
+            result[0].unicode_name.as_deref(),
+            Some("LATIN SMALL LETTER E WITH ACUTE")
+        );
         assert_eq!(result[0].utf8_bytes, vec![0xC3, 0xA9]);
         assert_eq!(result[0].utf8_hex(), "C3 A9");
     }
