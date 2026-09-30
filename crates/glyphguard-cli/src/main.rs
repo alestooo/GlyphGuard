@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use glyphguard_core::inspect::{inspect_graphemes, inspect_scalars};
 use glyphguard_core::normalize::normalize;
+use glyphguard_core::rules::detect_invisible_characters;
 
 #[derive(Debug, Parser)]
 #[command(name = "glyphguard")]
@@ -24,6 +25,12 @@ enum Commands {
         /// Text to normalize.
         text: String,
     },
+
+    /// Scan text for Unicode security findings.
+    Scan {
+        /// Text to scan.
+        text: String,
+    },
 }
 
 fn main() {
@@ -32,6 +39,7 @@ fn main() {
     match cli.command {
         Commands::Inspect { text } => inspect(&text),
         Commands::Normalize { text } => print_normalization(&text),
+        Commands::Scan { text } => scan(&text),
     }
 }
 
@@ -110,6 +118,46 @@ fn print_normalization(text: &str) {
     println!("{}", result.nfkd);
     println!("Code points: {}", code_points(&result.nfkd));
     println!("Changed: {}", yes_no(result.nfkd_changed()));
+}
+
+fn scan(text: &str) {
+    let findings = detect_invisible_characters(text);
+
+    println!("GlyphGuard Security Scan");
+    println!();
+
+    println!("Input:");
+    println!("{text}");
+    println!();
+
+    if findings.is_empty() {
+        println!("No findings.");
+        return;
+    }
+
+    println!("Findings: {}", findings.len());
+    println!();
+
+    for finding in findings {
+        println!("[{}] {}", finding.rule_id, finding.message);
+        println!("Severity: {:?}", finding.severity);
+        println!("Scalar index: {}", finding.scalar_index);
+        println!("Byte index: {}", finding.byte_index);
+        println!("Code point: {}", finding.code_point_label());
+
+        let unicode_name = finding
+            .unicode_name
+            .as_deref()
+            .unwrap_or("<no Unicode name>");
+
+        println!("Unicode name: {unicode_name}");
+        println!("Escaped: {}", finding.escaped_character());
+
+        println!();
+        println!("Explanation:");
+        println!("{}", finding.explanation);
+        println!();
+    }
 }
 
 fn code_points(text: &str) -> String {
