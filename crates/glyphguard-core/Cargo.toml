@@ -8,5 +8,6 @@ rust-version.workspace = true
 
 [dependencies]
 unicode-normalization = "0.1"
+unicode-script = "0.5.8"
 unicode-segmentation = "1"
 unicode_names2 = "2"
