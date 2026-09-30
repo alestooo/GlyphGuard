@@ -4,10 +4,12 @@ import {
 
 import type {
   ComparisonResult,
+  DirectoryScanResult,
   FileScanResult,
   Finding,
   InspectResult,
   NormalizationResult,
+  PathScanResult,
 } from "../types/glyphguard";
 
 export async function scanText(
@@ -61,6 +63,28 @@ export async function scanFile(
 ): Promise<FileScanResult> {
   return invoke<FileScanResult>(
     "scan_file_command",
+    {
+      path,
+    },
+  );
+}
+
+export async function scanDirectory(
+  path: string,
+): Promise<DirectoryScanResult> {
+  return invoke<DirectoryScanResult>(
+    "scan_directory_command",
+    {
+      path,
+    },
+  );
+}
+
+export async function scanPath(
+  path: string,
+): Promise<PathScanResult> {
+  return invoke<PathScanResult>(
+    "scan_path_command",
     {
       path,
     },

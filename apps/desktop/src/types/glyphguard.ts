@@ -103,3 +103,43 @@ export interface FileScanResult {
 
   findings: Finding[];
 }
+
+export interface DirectoryFileScan {
+  path: string;
+
+  byteLength: number;
+  hasUtf8Bom: boolean;
+
+  findings: Finding[];
+}
+
+export interface SkippedFile {
+  path: string;
+  reason: string;
+}
+
+export interface DirectoryScanResult {
+  root: string;
+
+  discoveredFileCount: number;
+  scannedFileCount: number;
+  skippedFileCount: number;
+
+  filesWithFindings: number;
+  findingCount: number;
+
+  files: DirectoryFileScan[];
+  skipped: SkippedFile[];
+}
+
+export interface PathScanResult {
+  kind:
+    | "file"
+    | "directory";
+
+  file:
+    FileScanResult | null;
+
+  directory:
+    DirectoryScanResult | null;
+}
