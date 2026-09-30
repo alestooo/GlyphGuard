@@ -2,6 +2,7 @@
 members = [
     "crates/glyphguard-core",
     "crates/glyphguard-cli",
+    "apps/desktop/src-tauri",
 ]
 resolver = "3"
 
