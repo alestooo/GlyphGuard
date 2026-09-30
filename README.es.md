@@ -155,7 +155,7 @@ GlyphGuard Desktop actualmente soporta 12 idiomas de interfaz:
 
 Más información:
 
-[Localización](docs/localization.md)
+[Localización](docs/localization.es.md)
 
 ---
 
@@ -173,7 +173,7 @@ La barra lateral y el encabezado permanecen oscuros para mantener la identidad v
 
 Más información:
 
-[Sistema de temas](docs/themes.md)
+[Sistema de temas](docs/themes.es.md)
 
 ---
 
@@ -191,7 +191,7 @@ El mismo branding se utiliza en la interfaz de escritorio y en los recursos nati
 
 Más información:
 
-[Branding](docs/branding.md)
+[Branding](docs/branding.es.md)
 
 ---
 
@@ -251,11 +251,11 @@ GlyphGuard_0.1.0_x64-setup.exe
 
 La documentación detallada se mantiene separada para evitar sobrecargar este README.
 
-- [Interfaz Desktop](docs/desktop.md)
-- [Localización](docs/localization.md)
-- [Sistema de temas](docs/themes.md)
-- [Branding](docs/branding.md)
-- [Roadmap visual](docs/desktop-roadmap.md)
+- [Interfaz Desktop](docs/desktop.es.md)
+- [Localización](docs/localization.es.md)
+- [Sistema de temas](docs/themes.es.md)
+- [Branding](docs/branding.es.md)
+- [Roadmap visual](docs/desktop-roadmap.es.md)
 
 ---
 
@@ -294,7 +294,7 @@ El trabajo restante se centra principalmente en:
 
 Consulta el plan completo aquí:
 
-[Roadmap visual de escritorio](docs/desktop-roadmap.md)
+[Roadmap visual de escritorio](docs/desktop-roadmap.es.md)
 
 ---
 
