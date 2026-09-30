@@ -1,3 +1,4 @@
+pub mod compare;
 pub mod findings;
 pub mod inspect;
 pub mod normalize;

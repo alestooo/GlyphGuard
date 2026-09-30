@@ -1,4 +1,6 @@
 use clap::{Parser, Subcommand};
+
+use glyphguard_core::compare::{ComparisonDifference, compare_strings};
 use glyphguard_core::inspect::{inspect_graphemes, inspect_scalars};
 use glyphguard_core::normalize::normalize;
 use glyphguard_core::rules::scan_text;
@@ -31,6 +33,15 @@ enum Commands {
         /// Text to scan.
         text: String,
     },
+
+    /// Compare two strings at the Unicode level.
+    Compare {
+        /// First string.
+        left: String,
+
+        /// Second string.
+        right: String,
+    },
 }
 
 fn main() {
@@ -38,8 +49,16 @@ fn main() {
 
     match cli.command {
         Commands::Inspect { text } => inspect(&text),
-        Commands::Normalize { text } => print_normalization(&text),
+
+        Commands::Normalize { text } => {
+            print_normalization(&text);
+        }
+
         Commands::Scan { text } => scan(&text),
+
+        Commands::Compare { left, right } => {
+            compare(&left, &right);
+        }
     }
 }
 
@@ -140,6 +159,7 @@ fn scan(text: &str) {
 
     for finding in findings {
         println!("[{}] {}", finding.rule_id, finding.message);
+
         println!("Severity: {:?}", finding.severity);
         println!("Scalar index: {}", finding.scalar_index);
         println!("Byte index: {}", finding.byte_index);
@@ -157,6 +177,95 @@ fn scan(text: &str) {
         println!("Explanation:");
         println!("{}", finding.explanation);
         println!();
+    }
+}
+
+fn compare(left: &str, right: &str) {
+    let result = compare_strings(left, right);
+
+    println!("GlyphGuard Compare");
+    println!();
+
+    println!("Left:");
+    println!("{}", result.left);
+    println!();
+
+    println!("Right:");
+    println!("{}", result.right);
+    println!();
+
+    println!("Binary equal: {}", yes_no(result.binary_equal));
+
+    println!("NFC equal: {}", yes_no(result.nfc_equal));
+
+    println!("NFKC equal: {}", yes_no(result.nfkc_equal));
+
+    println!(
+        "Confusable skeleton equal: {}",
+        yes_no(result.confusable_skeleton_equal)
+    );
+
+    println!();
+
+    println!("Left skeleton:");
+    println!("{}", result.left_skeleton);
+    println!();
+
+    println!("Right skeleton:");
+    println!("{}", result.right_skeleton);
+    println!();
+
+    if result.differences.is_empty() {
+        println!("No scalar differences.");
+        return;
+    }
+
+    println!("Differences: {}", result.differences.len());
+    println!();
+
+    for difference in &result.differences {
+        print_difference(difference);
+    }
+}
+
+fn print_difference(difference: &ComparisonDifference) {
+    println!("[{}]", difference.scalar_index);
+
+    print_comparison_side(
+        "Left",
+        difference.left_character,
+        difference.left_code_point_label(),
+        difference.left_unicode_name.as_deref(),
+    );
+
+    print_comparison_side(
+        "Right",
+        difference.right_character,
+        difference.right_code_point_label(),
+        difference.right_unicode_name.as_deref(),
+    );
+
+    println!();
+}
+
+fn print_comparison_side(
+    label: &str,
+    character: Option<char>,
+    code_point: Option<String>,
+    unicode_name: Option<&str>,
+) {
+    match character {
+        Some(character) => {
+            let code_point = code_point.as_deref().unwrap_or("<unknown>");
+
+            let unicode_name = unicode_name.unwrap_or("<no Unicode name>");
+
+            println!("{label}: {:?}  {code_point}  {unicode_name}", character);
+        }
+
+        None => {
+            println!("{label}: <missing>");
+        }
     }
 }
 
