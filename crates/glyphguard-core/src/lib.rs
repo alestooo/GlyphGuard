@@ -1,3 +1,5 @@
+pub mod inspect;
+
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 pub fn project_name() -> &'static str {
