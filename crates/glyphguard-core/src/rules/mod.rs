@@ -1,4 +1,5 @@
 mod bidi;
+mod confusables;
 mod invisible;
 mod mixed_scripts;
 mod whitespace;
@@ -6,6 +7,9 @@ mod whitespace;
 use crate::findings::Finding;
 
 pub use bidi::detect_bidi_controls;
+pub use confusables::{
+    confusable_skeleton, detect_unicode_confusables, have_same_confusable_skeleton,
+};
 pub use invisible::detect_invisible_characters;
 pub use mixed_scripts::detect_mixed_scripts;
 pub use whitespace::detect_suspicious_whitespace;
@@ -15,6 +19,7 @@ pub fn scan_text(input: &str) -> Vec<Finding> {
 
     findings.extend(detect_invisible_characters(input));
     findings.extend(detect_bidi_controls(input));
+    findings.extend(detect_unicode_confusables(input));
     findings.extend(detect_suspicious_whitespace(input));
 
     findings.sort_by_key(|finding| (finding.byte_index, finding.rule_id));
@@ -42,8 +47,14 @@ mod tests {
     fn scan_text_detects_mixed_scripts() {
         let findings = scan_text("раypal");
 
-        assert_eq!(findings.len(), 1);
-        assert_eq!(findings[0].rule_id, "GG001");
+        assert!(findings.iter().any(|finding| finding.rule_id == "GG001"));
+    }
+
+    #[test]
+    fn scan_text_detects_confusables() {
+        let findings = scan_text("раypal");
+
+        assert!(findings.iter().any(|finding| finding.rule_id == "GG004"));
     }
 
     #[test]
@@ -59,5 +70,12 @@ mod tests {
     #[test]
     fn legitimate_japanese_mixture_is_allowed() {
         assert!(scan_text("日本語とカタカナ").is_empty());
+    }
+
+    #[test]
+    fn pure_cyrillic_text_is_not_marked_as_confusable() {
+        let findings = scan_text("Привет");
+
+        assert!(findings.iter().all(|finding| finding.rule_id != "GG004"));
     }
 }
