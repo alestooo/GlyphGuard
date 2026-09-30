@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 use glyphguard_core::inspect::{inspect_graphemes, inspect_scalars};
 use glyphguard_core::normalize::normalize;
-use glyphguard_core::rules::detect_invisible_characters;
+use glyphguard_core::rules::scan_text;
 
 #[derive(Debug, Parser)]
 #[command(name = "glyphguard")]
@@ -121,7 +121,7 @@ fn print_normalization(text: &str) {
 }
 
 fn scan(text: &str) {
-    let findings = detect_invisible_characters(text);
+    let findings = scan_text(text);
 
     println!("GlyphGuard Security Scan");
     println!();
