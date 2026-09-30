@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 use glyphguard_core::inspect::{inspect_graphemes, inspect_scalars};
+use glyphguard_core::normalize::normalize;
 
 #[derive(Debug, Parser)]
 #[command(name = "glyphguard")]
@@ -17,6 +18,12 @@ enum Commands {
         /// Text to inspect.
         text: String,
     },
+
+    /// Show Unicode normalization forms.
+    Normalize {
+        /// Text to normalize.
+        text: String,
+    },
 }
 
 fn main() {
@@ -24,12 +31,14 @@ fn main() {
 
     match cli.command {
         Commands::Inspect { text } => inspect(&text),
+        Commands::Normalize { text } => print_normalization(&text),
     }
 }
 
 fn inspect(text: &str) {
     println!("GlyphGuard Inspect");
     println!();
+
     println!("Input:");
     println!("{text}");
     println!();
@@ -66,4 +75,50 @@ fn inspect(text: &str) {
             grapheme.byte_index
         );
     }
+}
+
+fn print_normalization(text: &str) {
+    let result = normalize(text);
+
+    println!("GlyphGuard Normalize");
+    println!();
+
+    println!("Original:");
+    println!("{}", result.original);
+    println!("Code points: {}", code_points(&result.original));
+    println!();
+
+    println!("NFC:");
+    println!("{}", result.nfc);
+    println!("Code points: {}", code_points(&result.nfc));
+    println!("Changed: {}", yes_no(result.nfc_changed()));
+    println!();
+
+    println!("NFD:");
+    println!("{}", result.nfd);
+    println!("Code points: {}", code_points(&result.nfd));
+    println!("Changed: {}", yes_no(result.nfd_changed()));
+    println!();
+
+    println!("NFKC:");
+    println!("{}", result.nfkc);
+    println!("Code points: {}", code_points(&result.nfkc));
+    println!("Changed: {}", yes_no(result.nfkc_changed()));
+    println!();
+
+    println!("NFKD:");
+    println!("{}", result.nfkd);
+    println!("Code points: {}", code_points(&result.nfkd));
+    println!("Changed: {}", yes_no(result.nfkd_changed()));
+}
+
+fn code_points(text: &str) -> String {
+    text.chars()
+        .map(|character| format!("U+{:04X}", character as u32))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn yes_no(value: bool) -> &'static str {
+    if value { "yes" } else { "no" }
 }
