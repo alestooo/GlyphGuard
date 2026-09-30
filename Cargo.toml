@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "crates/glyphguard-core",
+    "crates/glyphguard-cli",
+]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/alestooo/GlyphGuard"
+rust-version = "1.98"
