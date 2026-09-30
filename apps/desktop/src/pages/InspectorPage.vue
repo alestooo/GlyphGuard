@@ -3,6 +3,10 @@ import {
   ref,
 } from "vue";
 
+import {
+  useI18n,
+} from "vue-i18n";
+
 import PageTitle from "../components/common/PageTitle.vue";
 
 import {
@@ -12,6 +16,12 @@ import {
 import type {
   InspectResult,
 } from "../types/glyphguard";
+
+const {
+  t,
+} = useI18n({
+  useScope: "global",
+});
 
 const text =
   ref("👨‍💻 café");
@@ -46,7 +56,9 @@ async function inspect() {
     console.error(cause);
 
     error.value =
-      "GlyphGuard could not inspect this text.";
+      t(
+        "inspector.errors.failed",
+      );
   } finally {
     loading.value = false;
   }
@@ -56,8 +68,16 @@ async function inspect() {
 <template>
   <section class="page">
     <PageTitle
-      title="Inspector"
-      subtitle="Inspect Unicode scalars, code points, bytes and grapheme clusters."
+      :title="
+        t(
+          'inspector.title',
+        )
+      "
+      :subtitle="
+        t(
+          'inspector.subtitle',
+        )
+      "
     />
 
     <article class="panel">
@@ -76,8 +96,12 @@ async function inspect() {
         >
           {{
             loading
-              ? "Inspecting..."
-              : "Inspect text"
+              ? t(
+                  "inspector.inspecting",
+                )
+              : t(
+                  "inspector.inspectButton",
+                )
           }}
         </button>
       </div>
@@ -93,7 +117,12 @@ async function inspect() {
     <template v-if="result">
       <section class="inspect-section">
         <h2>
-          Scalars
+          {{
+            t(
+              "inspector.scalars",
+            )
+          }}
+
           <span>
             {{
               result.scalars.length
@@ -104,8 +133,7 @@ async function inspect() {
         <div class="scalar-grid">
           <article
             v-for="
-              scalar
-              in result.scalars
+              scalar in result.scalars
             "
             :key="
               scalar.scalarIndex
@@ -130,7 +158,9 @@ async function inspect() {
             <span>
               {{
                 scalar.unicodeName ??
-                "Unknown Unicode name"
+                t(
+                  "common.unknown",
+                )
               }}
             </span>
 
@@ -142,13 +172,16 @@ async function inspect() {
             </code>
 
             <small>
-              scalar
               {{
-                scalar.scalarIndex
-              }}
-              · byte
-              {{
-                scalar.byteIndex
+                t(
+                  "inspector.scalarPosition",
+                  {
+                    scalar:
+                      scalar.scalarIndex,
+                    byte:
+                      scalar.byteIndex,
+                  },
+                )
               }}
             </small>
           </article>
@@ -157,7 +190,12 @@ async function inspect() {
 
       <section class="inspect-section">
         <h2>
-          Grapheme clusters
+          {{
+            t(
+              "inspector.graphemes",
+            )
+          }}
+
           <span>
             {{
               result.graphemes.length
@@ -186,25 +224,39 @@ async function inspect() {
             </strong>
 
             <div>
-              Grapheme
               {{
-                grapheme
-                  .graphemeIndex
+                t(
+                  "inspector.graphemeIndex",
+                  {
+                    index:
+                      grapheme.graphemeIndex,
+                  },
+                )
               }}
             </div>
 
             <span>
               {{
-                grapheme.scalarCount
+                t(
+                  "inspector.scalarCount",
+                  {
+                    count:
+                      grapheme.scalarCount,
+                  },
+                )
               }}
-              scalar(s)
             </span>
 
             <span>
               {{
-                grapheme.byteLength
+                t(
+                  "inspector.byteCount",
+                  {
+                    count:
+                      grapheme.byteLength,
+                  },
+                )
               }}
-              byte(s)
             </span>
           </article>
         </div>
@@ -217,33 +269,23 @@ async function inspect() {
 .inspect-textarea {
   width: 100%;
   min-height: 130px;
-
   padding: 15px;
-
-  border:
-    1px solid
-    var(--border-primary);
-
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
-
   resize: vertical;
   outline: none;
-
   background: #0a1018;
   color: var(--text-primary);
-
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
-
-  font-size: 15px;
+  direction: ltr;
 }
 
 .inspect-actions {
   display: flex;
   justify-content: flex-end;
-
   margin-top: 14px;
 }
 
@@ -265,13 +307,11 @@ async function inspect() {
 
 .scalar-grid {
   display: grid;
-
   grid-template-columns:
     repeat(
       auto-fill,
       minmax(220px, 1fr)
     );
-
   gap: 12px;
 }
 
@@ -292,13 +332,11 @@ async function inspect() {
 
 .grapheme-list {
   display: grid;
-
   grid-template-columns:
     repeat(
       auto-fill,
       minmax(180px, 1fr)
     );
-
   gap: 12px;
 }
 
@@ -306,14 +344,5 @@ async function inspect() {
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.grapheme-card strong {
-  font-size: 28px;
-}
-
-.grapheme-card span {
-  color: var(--text-secondary);
-  font-size: 11px;
 }
 </style>

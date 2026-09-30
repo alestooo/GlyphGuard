@@ -4,6 +4,10 @@ import {
   ref,
 } from "vue";
 
+import {
+  useI18n,
+} from "vue-i18n";
+
 import PageTitle from "../components/common/PageTitle.vue";
 
 import {
@@ -14,18 +18,32 @@ import type {
   Finding,
 } from "../types/glyphguard";
 
-const text = ref("");
-const findings = ref<Finding[]>([]);
+const {
+  t,
+} = useI18n({
+  useScope: "global",
+});
 
-const isScanning = ref(false);
+const text =
+  ref("");
 
-const errorMessage = ref("");
+const findings =
+  ref<Finding[]>([]);
 
-const hasScanned = ref(false);
+const isScanning =
+  ref(false);
 
-const findingCount = computed(
-  () => findings.value.length,
-);
+const errorMessage =
+  ref("");
+
+const hasScanned =
+  ref(false);
+
+const findingCount =
+  computed(
+    () =>
+      findings.value.length,
+  );
 
 async function runScan() {
   errorMessage.value = "";
@@ -34,7 +52,9 @@ async function runScan() {
 
   if (!text.value) {
     errorMessage.value =
-      "Enter text before running a scan.";
+      t(
+        "scan.errors.empty",
+      );
 
     return;
   }
@@ -43,14 +63,18 @@ async function runScan() {
 
   try {
     findings.value =
-      await scanText(text.value);
+      await scanText(
+        text.value,
+      );
 
     hasScanned.value = true;
   } catch (error) {
     console.error(error);
 
     errorMessage.value =
-      "GlyphGuard could not analyze the text.";
+      t(
+        "scan.errors.failed",
+      );
   } finally {
     isScanning.value = false;
   }
@@ -73,20 +97,41 @@ function severityClass(
 <template>
   <section class="page">
     <PageTitle
-      title="Scan Text"
-      subtitle="Analyze text for suspicious Unicode characters, scripts and controls."
+      :title="
+        t(
+          'scan.title',
+        )
+      "
+      :subtitle="
+        t(
+          'scan.subtitle',
+        )
+      "
     />
 
     <div class="scan-layout">
-      <section class="panel scan-input-panel">
+      <section
+        class="
+          panel
+          scan-input-panel
+        "
+      >
         <div class="scan-input-header">
           <div>
             <span class="panel-label">
-              Input
+              {{
+                t(
+                  "scan.input",
+                )
+              }}
             </span>
 
             <h2 class="panel-title">
-              Text to analyze
+              {{
+                t(
+                  "scan.textToAnalyze",
+                )
+              }}
             </h2>
           </div>
 
@@ -96,7 +141,11 @@ function severityClass(
             type="button"
             @click="clearText"
           >
-            Clear
+            {{
+              t(
+                "common.clear",
+              )
+            }}
           </button>
         </div>
 
@@ -104,12 +153,24 @@ function severityClass(
           v-model="text"
           class="scan-textarea"
           spellcheck="false"
-          placeholder="Paste or type text here..."
+          :placeholder="
+            t(
+              'scan.placeholder',
+            )
+          "
         />
 
         <div class="scan-actions">
           <span class="scan-character-count">
-            {{ text.length }} characters
+            {{
+              t(
+                "scan.characters",
+                {
+                  count:
+                    text.length,
+                },
+              )
+            }}
           </span>
 
           <button
@@ -120,8 +181,12 @@ function severityClass(
           >
             {{
               isScanning
-                ? "Scanning..."
-                : "Scan text"
+                ? t(
+                    "common.scanning",
+                  )
+                : t(
+                    "scan.scanButton",
+                  )
             }}
           </button>
         </div>
@@ -139,7 +204,10 @@ function severityClass(
           hasScanned &&
           findingCount === 0
         "
-        class="panel scan-clean-result"
+        class="
+          panel
+          scan-clean-result
+        "
       >
         <div class="scan-clean-icon">
           ✓
@@ -147,17 +215,27 @@ function severityClass(
 
         <div>
           <span class="panel-label">
-            Scan complete
+            {{
+              t(
+                "scan.complete",
+              )
+            }}
           </span>
 
           <h2 class="panel-title">
-            No findings
+            {{
+              t(
+                "scan.noFindings",
+              )
+            }}
           </h2>
 
           <p class="panel-description">
-            GlyphGuard did not detect
-            suspicious Unicode patterns
-            in this text.
+            {{
+              t(
+                "scan.noFindingsDescription",
+              )
+            }}
           </p>
         </div>
       </section>
@@ -169,30 +247,44 @@ function severityClass(
         <div class="scan-results-header">
           <div>
             <span class="panel-label">
-              Results
+              {{
+                t(
+                  "common.results",
+                )
+              }}
             </span>
 
             <h2 class="panel-title">
-              {{ findingCount }}
               {{
-                findingCount === 1
-                  ? "finding"
-                  : "findings"
+                t(
+                  "scan.findingCount",
+                  {
+                    count:
+                      findingCount,
+                  },
+                )
               }}
             </h2>
           </div>
         </div>
 
         <article
-          v-for="finding in findings"
+          v-for="
+            finding in findings
+          "
           :key="
             `${finding.ruleId}-${finding.byteIndex}-${finding.codePoint}`
           "
-          class="panel finding-card"
+          class="
+            panel
+            finding-card
+          "
         >
           <div class="finding-card-header">
             <div class="finding-rule">
-              {{ finding.ruleId }}
+              {{
+                finding.ruleId
+              }}
             </div>
 
             <span
@@ -203,18 +295,26 @@ function severityClass(
                 )
               "
             >
-              {{ finding.severity }}
+              {{
+                finding.severity
+              }}
             </span>
           </div>
 
           <h3 class="finding-message">
-            {{ finding.message }}
+            {{
+              finding.message
+            }}
           </h3>
 
           <div class="finding-details">
             <div class="finding-detail">
               <span>
-                Character
+                {{
+                  t(
+                    "common.character",
+                  )
+                }}
               </span>
 
               <strong>
@@ -227,7 +327,11 @@ function severityClass(
 
             <div class="finding-detail">
               <span>
-                Code point
+                {{
+                  t(
+                    "common.codePoint",
+                  )
+                }}
               </span>
 
               <strong>
@@ -239,20 +343,30 @@ function severityClass(
 
             <div class="finding-detail">
               <span>
-                Unicode name
+                {{
+                  t(
+                    "common.unicodeName",
+                  )
+                }}
               </span>
 
               <strong>
                 {{
                   finding.unicodeName ??
-                  "Unknown"
+                  t(
+                    "common.unknown",
+                  )
                 }}
               </strong>
             </div>
 
             <div class="finding-detail">
               <span>
-                Scalar index
+                {{
+                  t(
+                    "common.scalarIndex",
+                  )
+                }}
               </span>
 
               <strong>
@@ -264,7 +378,11 @@ function severityClass(
 
             <div class="finding-detail">
               <span>
-                Byte index
+                {{
+                  t(
+                    "common.byteIndex",
+                  )
+                }}
               </span>
 
               <strong>
@@ -276,7 +394,11 @@ function severityClass(
 
             <div class="finding-detail">
               <span>
-                Escaped
+                {{
+                  t(
+                    "common.escaped",
+                  )
+                }}
               </span>
 
               <code>
@@ -289,11 +411,17 @@ function severityClass(
 
           <div class="finding-explanation">
             <span>
-              Why this matters
+              {{
+                t(
+                  "common.whyThisMatters",
+                )
+              }}
             </span>
 
             <p>
-              {{ finding.explanation }}
+              {{
+                finding.explanation
+              }}
             </p>
           </div>
         </article>
@@ -319,62 +447,37 @@ function severityClass(
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-
   padding: 20px 22px 14px;
 }
 
 .scan-clear-button {
   padding: 7px 10px;
-
   border: 1px solid var(--border-primary);
   border-radius: 8px;
-
   background: var(--bg-muted);
   color: var(--text-secondary);
-
   cursor: pointer;
-}
-
-.scan-clear-button:hover {
-  color: var(--text-primary);
-  border-color: var(--border-secondary);
 }
 
 .scan-textarea {
   display: block;
-
   width: 100%;
   min-height: 230px;
-
   resize: vertical;
-
   padding: 18px 22px;
-
   border: 0;
   border-top: 1px solid var(--border-primary);
   border-bottom: 1px solid var(--border-primary);
-
   outline: none;
-
   background: #0a1018;
   color: var(--text-primary);
-
   font-family:
     "Cascadia Code",
-    "JetBrains Mono",
     Consolas,
     monospace;
-
   font-size: 14px;
   line-height: 1.7;
-}
-
-.scan-textarea::placeholder {
-  color: var(--text-muted);
-}
-
-.scan-textarea:focus {
-  background: #0b121b;
+  direction: ltr;
 }
 
 .scan-actions {
@@ -382,7 +485,6 @@ function severityClass(
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-
   padding: 14px 22px;
 }
 
@@ -391,33 +493,12 @@ function severityClass(
   font-size: 11px;
 }
 
-.primary-button:disabled {
-  opacity: 0.55;
-  cursor: wait;
-  transform: none;
-}
-
 .scan-error {
   margin: 0;
-
   padding: 12px 14px;
-
-  border: 1px solid rgba(
-    255,
-    101,
-    119,
-    0.3
-  );
-
+  border: 1px solid rgba(255, 101, 119, 0.3);
   border-radius: var(--radius-md);
-
-  background: rgba(
-    255,
-    101,
-    119,
-    0.08
-  );
-
+  background: rgba(255, 101, 119, 0.08);
   color: #ff9aa7;
 }
 
@@ -430,37 +511,10 @@ function severityClass(
 .scan-clean-icon {
   display: grid;
   place-items: center;
-
   width: 48px;
   height: 48px;
-
-  flex: 0 0 auto;
-
-  border: 1px solid rgba(
-    67,
-    209,
-    122,
-    0.3
-  );
-
   border-radius: 14px;
-
-  background: rgba(
-    67,
-    209,
-    122,
-    0.09
-  );
-
   color: var(--success);
-
-  font-size: 21px;
-  font-weight: 800;
-}
-
-.scan-clean-result
-.panel-description {
-  margin-bottom: 0;
 }
 
 .scan-results {
@@ -469,183 +523,58 @@ function severityClass(
   gap: 14px;
 }
 
-.scan-results-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 2px;
-}
-
 .finding-card {
   padding: 20px 22px;
 }
 
 .finding-card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 16px;
 }
 
 .finding-rule {
   color: var(--accent-primary);
-
-  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.08em;
 }
 
 .finding-severity {
   padding: 5px 9px;
-
-  border: 1px solid var(--border-primary);
   border-radius: 999px;
-
   font-size: 10px;
-  font-weight: 800;
   text-transform: uppercase;
-}
-
-.finding-severity-info {
-  color: #8ad7ff;
-  background: rgba(
-    34,
-    184,
-    255,
-    0.08
-  );
-}
-
-.finding-severity-warning {
-  color: var(--warning);
-  background: rgba(
-    246,
-    196,
-    83,
-    0.08
-  );
-}
-
-.finding-severity-suspicious {
-  color: #ff9d66;
-  background: rgba(
-    255,
-    157,
-    102,
-    0.08
-  );
-}
-
-.finding-severity-highrisk {
-  color: var(--danger);
-  background: rgba(
-    255,
-    101,
-    119,
-    0.08
-  );
-}
-
-.finding-message {
-  margin: 14px 0 16px;
-
-  font-size: 17px;
-  font-weight: 700;
 }
 
 .finding-details {
   display: grid;
-
   grid-template-columns:
     repeat(
       3,
       minmax(0, 1fr)
     );
-
   gap: 10px;
 }
 
 .finding-detail {
-  min-width: 0;
-
   padding: 11px 12px;
-
   border: 1px solid var(--border-primary);
   border-radius: 9px;
-
   background: var(--bg-muted);
 }
 
 .finding-detail span {
   display: block;
-
   margin-bottom: 4px;
-
   color: var(--text-muted);
-
   font-size: 10px;
-}
-
-.finding-detail strong {
-  display: block;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  color: var(--text-primary);
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.finding-detail code {
-  display: inline-block;
-
-  max-width: 100%;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .finding-explanation {
   margin-top: 14px;
-
   padding-top: 14px;
-
   border-top: 1px solid var(--border-primary);
 }
 
-.finding-explanation > span {
-  color: var(--text-muted);
-
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
 .finding-explanation p {
-  margin: 7px 0 0;
-
   color: var(--text-secondary);
-
-  font-size: 12px;
-  line-height: 1.65;
-}
-
-@media (max-width: 900px) {
-  .finding-details {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
-  }
-}
-
-@media (max-width: 620px) {
-  .finding-details {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

@@ -3,6 +3,10 @@ import {
   ref,
 } from "vue";
 
+import {
+  useI18n,
+} from "vue-i18n";
+
 import PageTitle from "../components/common/PageTitle.vue";
 
 import {
@@ -12,6 +16,12 @@ import {
 import type {
   ComparisonResult,
 } from "../types/glyphguard";
+
+const {
+  t,
+} = useI18n({
+  useScope: "global",
+});
 
 const left =
   ref("paypal");
@@ -39,7 +49,9 @@ async function compare() {
     !right.value
   ) {
     error.value =
-      "Enter at least one string.";
+      t(
+        "compare.errors.empty",
+      );
 
     return;
   }
@@ -56,7 +68,9 @@ async function compare() {
     console.error(cause);
 
     error.value =
-      "GlyphGuard could not compare the strings.";
+      t(
+        "compare.errors.failed",
+      );
   } finally {
     loading.value = false;
   }
@@ -66,22 +80,38 @@ function valueLabel(
   value: boolean,
 ) {
   return value
-    ? "Yes"
-    : "No";
+    ? t(
+        "common.yes",
+      )
+    : t(
+        "common.no",
+      );
 }
 </script>
 
 <template>
   <section class="page">
     <PageTitle
-      title="Compare"
-      subtitle="Compare two strings using Unicode normalization and confusable skeletons."
+      :title="
+        t(
+          'compare.title',
+        )
+      "
+      :subtitle="
+        t(
+          'compare.subtitle',
+        )
+      "
     />
 
     <div class="compare-input-grid">
       <article class="panel">
         <span class="panel-label">
-          Left
+          {{
+            t(
+              "common.left",
+            )
+          }}
         </span>
 
         <textarea
@@ -93,7 +123,11 @@ function valueLabel(
 
       <article class="panel">
         <span class="panel-label">
-          Right
+          {{
+            t(
+              "common.right",
+            )
+          }}
         </span>
 
         <textarea
@@ -113,8 +147,12 @@ function valueLabel(
       >
         {{
           loading
-            ? "Comparing..."
-            : "Compare strings"
+            ? t(
+                "compare.comparing",
+              )
+            : t(
+                "compare.compareButton",
+              )
         }}
       </button>
     </div>
@@ -130,7 +168,11 @@ function valueLabel(
       <div class="comparison-summary">
         <article class="panel metric">
           <span>
-            Binary equal
+            {{
+              t(
+                "compare.binaryEqual",
+              )
+            }}
           </span>
 
           <strong>
@@ -144,7 +186,11 @@ function valueLabel(
 
         <article class="panel metric">
           <span>
-            NFC equal
+            {{
+              t(
+                "compare.nfcEqual",
+              )
+            }}
           </span>
 
           <strong>
@@ -158,7 +204,11 @@ function valueLabel(
 
         <article class="panel metric">
           <span>
-            NFKC equal
+            {{
+              t(
+                "compare.nfkcEqual",
+              )
+            }}
           </span>
 
           <strong>
@@ -172,7 +222,11 @@ function valueLabel(
 
         <article class="panel metric">
           <span>
-            Skeleton equal
+            {{
+              t(
+                "compare.skeletonEqual",
+              )
+            }}
           </span>
 
           <strong>
@@ -188,7 +242,11 @@ function valueLabel(
       <div class="compare-skeletons">
         <article class="panel">
           <span class="panel-label">
-            Left skeleton
+            {{
+              t(
+                "compare.leftSkeleton",
+              )
+            }}
           </span>
 
           <code>
@@ -200,7 +258,11 @@ function valueLabel(
 
         <article class="panel">
           <span class="panel-label">
-            Right skeleton
+            {{
+              t(
+                "compare.rightSkeleton",
+              )
+            }}
           </span>
 
           <code>
@@ -218,7 +280,11 @@ function valueLabel(
         class="difference-list"
       >
         <div class="section-heading">
-          Differences
+          {{
+            t(
+              "compare.differences",
+            )
+          }}
 
           <span>
             {{
@@ -241,38 +307,46 @@ function valueLabel(
           "
         >
           <div class="difference-index">
-            Position
             {{
-              difference.scalarIndex
+              t(
+                "compare.position",
+                {
+                  index:
+                    difference.scalarIndex,
+                },
+              )
             }}
           </div>
 
           <div class="difference-grid">
             <div>
               <span>
-                Left
+                {{
+                  t(
+                    "common.left",
+                  )
+                }}
               </span>
 
               <strong>
                 {{
-                  difference
-                    .leftCharacter ??
-                  "<missing>"
+                  difference.leftCharacter ??
+                  t(
+                    "common.missing",
+                  )
                 }}
               </strong>
 
               <code>
                 {{
-                  difference
-                    .leftCodePointLabel ??
+                  difference.leftCodePointLabel ??
                   "—"
                 }}
               </code>
 
               <small>
                 {{
-                  difference
-                    .leftUnicodeName ??
+                  difference.leftUnicodeName ??
                   "—"
                 }}
               </small>
@@ -280,29 +354,32 @@ function valueLabel(
 
             <div>
               <span>
-                Right
+                {{
+                  t(
+                    "common.right",
+                  )
+                }}
               </span>
 
               <strong>
                 {{
-                  difference
-                    .rightCharacter ??
-                  "<missing>"
+                  difference.rightCharacter ??
+                  t(
+                    "common.missing",
+                  )
                 }}
               </strong>
 
               <code>
                 {{
-                  difference
-                    .rightCodePointLabel ??
+                  difference.rightCodePointLabel ??
                   "—"
                 }}
               </code>
 
               <small>
                 {{
-                  difference
-                    .rightUnicodeName ??
+                  difference.rightUnicodeName ??
                   "—"
                 }}
               </small>
@@ -318,7 +395,11 @@ function valueLabel(
           compare-clean
         "
       >
-        No scalar differences.
+        {{
+          t(
+            "compare.noDifferences",
+          )
+        }}
       </article>
     </template>
   </section>
@@ -347,40 +428,30 @@ function valueLabel(
       4,
       minmax(0, 1fr)
     );
-
   margin-top: 20px;
 }
 
 .compare-textarea {
   width: 100%;
   min-height: 130px;
-
   margin-top: 10px;
   padding: 14px;
-
   resize: vertical;
-
-  border:
-    1px solid
-    var(--border-primary);
-
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
-
   outline: none;
-
   background: #0a1018;
   color: var(--text-primary);
-
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
+  direction: ltr;
 }
 
 .compare-action {
   display: flex;
   justify-content: flex-end;
-
   margin-top: 16px;
 }
 
@@ -390,17 +461,13 @@ function valueLabel(
 
 .metric span {
   display: block;
-
   color: var(--text-muted);
-
   font-size: 11px;
 }
 
 .metric strong {
   display: block;
-
   margin-top: 7px;
-
   font-size: 19px;
 }
 
@@ -410,8 +477,8 @@ function valueLabel(
 
 .compare-skeletons code {
   display: block;
-
   margin-top: 8px;
+  direction: ltr;
 }
 
 .difference-list {
@@ -419,11 +486,7 @@ function valueLabel(
 }
 
 .section-heading {
-  display: flex;
-  gap: 8px;
-
   margin-bottom: 12px;
-
   font-size: 16px;
   font-weight: 700;
 }
@@ -434,22 +497,18 @@ function valueLabel(
 
 .difference-index {
   margin-bottom: 13px;
-
   color: var(--accent-primary);
-
   font-size: 11px;
   font-weight: 800;
 }
 
 .difference-grid {
   display: grid;
-
   grid-template-columns:
     repeat(
       2,
       minmax(0, 1fr)
     );
-
   gap: 12px;
 }
 
@@ -457,53 +516,14 @@ function valueLabel(
   display: flex;
   flex-direction: column;
   gap: 7px;
-
   padding: 13px;
-
-  border:
-    1px solid
-    var(--border-primary);
-
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
-
   background: var(--bg-muted);
-}
-
-.difference-grid span,
-.difference-grid small {
-  color: var(--text-muted);
-}
-
-.difference-grid strong {
-  font-size: 24px;
 }
 
 .compare-clean {
   margin-top: 16px;
-
   color: var(--success);
-}
-
-@media (
-  max-width: 850px
-) {
-  .comparison-summary {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
-  }
-}
-
-@media (
-  max-width: 650px
-) {
-  .compare-input-grid,
-  .compare-skeletons,
-  .difference-grid {
-    grid-template-columns:
-      1fr;
-  }
 }
 </style>

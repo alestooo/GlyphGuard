@@ -3,6 +3,10 @@ import {
   ref,
 } from "vue";
 
+import {
+  useI18n,
+} from "vue-i18n";
+
 import PageTitle from "../components/common/PageTitle.vue";
 
 import {
@@ -12,6 +16,12 @@ import {
 import type {
   NormalizationResult,
 } from "../types/glyphguard";
+
+const {
+  t,
+} = useI18n({
+  useScope: "global",
+});
 
 const text =
   ref("é");
@@ -46,26 +56,40 @@ async function runNormalize() {
     console.error(cause);
 
     error.value =
-      "GlyphGuard could not normalize this text.";
+      t(
+        "normalize.errors.failed",
+      );
   } finally {
     loading.value = false;
   }
 }
 
-function yesNo(
+function changeLabel(
   value: boolean,
 ) {
   return value
-    ? "Changed"
-    : "Unchanged";
+    ? t(
+        "common.changed",
+      )
+    : t(
+        "common.unchanged",
+      );
 }
 </script>
 
 <template>
   <section class="page">
     <PageTitle
-      title="Normalize"
-      subtitle="Inspect NFC, NFD, NFKC and NFKD representations."
+      :title="
+        t(
+          'normalize.title',
+        )
+      "
+      :subtitle="
+        t(
+          'normalize.subtitle',
+        )
+      "
     />
 
     <article class="panel">
@@ -84,8 +108,12 @@ function yesNo(
         >
           {{
             loading
-              ? "Normalizing..."
-              : "Normalize text"
+              ? t(
+                  "normalize.normalizing",
+                )
+              : t(
+                  "normalize.normalizeButton",
+                )
           }}
         </button>
       </div>
@@ -102,93 +130,74 @@ function yesNo(
       v-if="result"
       class="normalization-grid"
     >
-      <article class="panel normalization-card">
+      <article
+        class="
+          panel
+          normalization-card
+        "
+      >
         <span class="panel-label">
-          Original
+          {{
+            t(
+              "normalize.original",
+            )
+          }}
         </span>
 
         <strong>
-          {{ result.original }}
+          {{
+            result.original
+          }}
         </strong>
       </article>
 
-      <article class="panel normalization-card">
+      <article
+        v-for="
+          item in [
+            {
+              name: 'NFC',
+              value: result.nfc,
+              changed: result.nfcChanged,
+            },
+            {
+              name: 'NFD',
+              value: result.nfd,
+              changed: result.nfdChanged,
+            },
+            {
+              name: 'NFKC',
+              value: result.nfkc,
+              changed: result.nfkcChanged,
+            },
+            {
+              name: 'NFKD',
+              value: result.nfkd,
+              changed: result.nfkdChanged,
+            },
+          ]
+        "
+        :key="item.name"
+        class="
+          panel
+          normalization-card
+        "
+      >
         <div class="normalization-header">
           <span class="panel-label">
-            NFC
+            {{ item.name }}
           </span>
 
           <span>
             {{
-              yesNo(
-                result.nfcChanged,
+              changeLabel(
+                item.changed,
               )
             }}
           </span>
         </div>
 
         <strong>
-          {{ result.nfc }}
-        </strong>
-      </article>
-
-      <article class="panel normalization-card">
-        <div class="normalization-header">
-          <span class="panel-label">
-            NFD
-          </span>
-
-          <span>
-            {{
-              yesNo(
-                result.nfdChanged,
-              )
-            }}
-          </span>
-        </div>
-
-        <strong>
-          {{ result.nfd }}
-        </strong>
-      </article>
-
-      <article class="panel normalization-card">
-        <div class="normalization-header">
-          <span class="panel-label">
-            NFKC
-          </span>
-
-          <span>
-            {{
-              yesNo(
-                result.nfkcChanged,
-              )
-            }}
-          </span>
-        </div>
-
-        <strong>
-          {{ result.nfkc }}
-        </strong>
-      </article>
-
-      <article class="panel normalization-card">
-        <div class="normalization-header">
-          <span class="panel-label">
-            NFKD
-          </span>
-
-          <span>
-            {{
-              yesNo(
-                result.nfkdChanged,
-              )
-            }}
-          </span>
-        </div>
-
-        <strong>
-          {{ result.nfkd }}
+          {{ item.value }}
         </strong>
       </article>
     </div>
@@ -199,31 +208,23 @@ function yesNo(
 .normalize-textarea {
   width: 100%;
   min-height: 130px;
-
   padding: 15px;
-
-  border:
-    1px solid
-    var(--border-primary);
-
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
-
   resize: vertical;
   outline: none;
-
   background: #0a1018;
   color: var(--text-primary);
-
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
+  direction: ltr;
 }
 
 .normalize-actions {
   display: flex;
   justify-content: flex-end;
-
   margin-top: 14px;
 }
 
@@ -233,50 +234,28 @@ function yesNo(
 
 .normalization-grid {
   display: grid;
-
   grid-template-columns:
     repeat(
       2,
       minmax(0, 1fr)
     );
-
   gap: 14px;
-
   margin-top: 18px;
 }
 
 .normalization-card strong {
   display: block;
-
   margin-top: 12px;
-
   overflow-wrap: anywhere;
-
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
-
-  font-size: 21px;
+  direction: ltr;
 }
 
 .normalization-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-.normalization-header > span:last-child {
-  color: var(--text-muted);
-
-  font-size: 10px;
-}
-
-@media (
-  max-width: 700px
-) {
-  .normalization-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

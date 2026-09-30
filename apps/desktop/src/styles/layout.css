@@ -535,3 +535,51 @@
     grid-template-columns: 1fr;
   }
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.language-selector {
+  position: relative;
+}
+
+.language-select {
+  min-width: 140px;
+
+  padding: 7px 30px 7px 10px;
+
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+
+  outline: none;
+
+  background: var(--bg-muted);
+  color: var(--text-primary);
+
+  font: inherit;
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.language-select:hover {
+  border-color: var(--border-secondary);
+}
+
+.language-select:focus {
+  border-color: var(--accent-primary);
+}
+
+.engine-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  white-space: nowrap;
+
+  color: var(--text-secondary);
+  font-size: 11px;
+}

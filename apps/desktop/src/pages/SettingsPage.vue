@@ -1,9 +1,41 @@
 <script setup lang="ts">
 import {
+  computed,
   ref,
 } from "vue";
 
+import {
+  useI18n,
+} from "vue-i18n";
+
 import PageTitle from "../components/common/PageTitle.vue";
+
+import {
+  localeOptions,
+  setAppLocale,
+} from "../i18n";
+
+import type {
+  AppLocale,
+} from "../i18n/types";
+
+const {
+  t,
+  locale,
+} = useI18n({
+  useScope: "global",
+});
+
+const selectedLocale =
+  computed({
+    get() {
+      return locale.value as AppLocale;
+    },
+
+    set(value: AppLocale) {
+      setAppLocale(value);
+    },
+  });
 
 const mixedScripts =
   ref(true);
@@ -27,25 +59,91 @@ const theme =
 <template>
   <section class="page">
     <PageTitle
-      title="Settings"
-      subtitle="Configure the GlyphGuard desktop experience."
+      :title="
+        t(
+          'settings.title',
+        )
+      "
+      :subtitle="
+        t(
+          'settings.subtitle',
+        )
+      "
     />
 
     <div class="settings-layout">
       <article class="panel">
         <span class="panel-label">
-          Detection rules
+          {{
+            t(
+              "settings.language",
+            )
+          }}
         </span>
 
         <h2 class="panel-title">
-          Security scanning
+          {{
+            t(
+              "settings.languageTitle",
+            )
+          }}
+        </h2>
+
+        <p class="settings-description">
+          {{
+            t(
+              "settings.languageDescription",
+            )
+          }}
+        </p>
+
+        <select
+          v-model="selectedLocale"
+          class="settings-language-select"
+        >
+          <option
+            v-for="
+              option in localeOptions
+            "
+            :key="option.code"
+            :value="option.code"
+          >
+            {{
+              option.flag
+            }}
+            {{
+              option.name
+            }}
+          </option>
+        </select>
+      </article>
+
+      <article class="panel">
+        <span class="panel-label">
+          {{
+            t(
+              "settings.detectionRules",
+            )
+          }}
+        </span>
+
+        <h2 class="panel-title">
+          {{
+            t(
+              "settings.securityScanning",
+            )
+          }}
         </h2>
 
         <div class="settings-list">
           <label class="setting-row">
             <div>
               <strong>
-                Mixed scripts
+                {{
+                  t(
+                    "dashboard.mixedScripts",
+                  )
+                }}
               </strong>
 
               <span>
@@ -62,7 +160,11 @@ const theme =
           <label class="setting-row">
             <div>
               <strong>
-                Invisible characters
+                {{
+                  t(
+                    "dashboard.invisibleCharacters",
+                  )
+                }}
               </strong>
 
               <span>
@@ -81,7 +183,11 @@ const theme =
           <label class="setting-row">
             <div>
               <strong>
-                Bidi controls
+                {{
+                  t(
+                    "dashboard.bidiControls",
+                  )
+                }}
               </strong>
 
               <span>
@@ -98,7 +204,11 @@ const theme =
           <label class="setting-row">
             <div>
               <strong>
-                Unicode confusables
+                {{
+                  t(
+                    "dashboard.unicodeConfusables",
+                  )
+                }}
               </strong>
 
               <span>
@@ -115,7 +225,11 @@ const theme =
           <label class="setting-row">
             <div>
               <strong>
-                Suspicious whitespace
+                {{
+                  t(
+                    "dashboard.suspiciousWhitespace",
+                  )
+                }}
               </strong>
 
               <span>
@@ -133,19 +247,29 @@ const theme =
         </div>
 
         <p class="settings-note">
-          Rule toggles are visual for now.
-          Persistent configuration will
-          be connected later.
+          {{
+            t(
+              "settings.rulesNote",
+            )
+          }}
         </p>
       </article>
 
       <article class="panel">
         <span class="panel-label">
-          Appearance
+          {{
+            t(
+              "settings.appearance",
+            )
+          }}
         </span>
 
         <h2 class="panel-title">
-          Theme
+          {{
+            t(
+              "settings.theme",
+            )
+          }}
         </h2>
 
         <div class="theme-options">
@@ -156,7 +280,11 @@ const theme =
               value="system"
             />
 
-            System
+            {{
+              t(
+                "settings.system",
+              )
+            }}
           </label>
 
           <label>
@@ -166,7 +294,11 @@ const theme =
               value="dark"
             />
 
-            Dark
+            {{
+              t(
+                "settings.dark",
+              )
+            }}
           </label>
 
           <label>
@@ -176,13 +308,20 @@ const theme =
               value="light"
             />
 
-            Light
+            {{
+              t(
+                "settings.light",
+              )
+            }}
           </label>
         </div>
 
         <p class="settings-note">
-          Dark mode is currently the
-          active GlyphGuard interface.
+          {{
+            t(
+              "settings.themeNote",
+            )
+          }}
         </p>
       </article>
     </div>
@@ -192,20 +331,33 @@ const theme =
 <style scoped>
 .settings-layout {
   display: grid;
-
   grid-template-columns:
     repeat(
       2,
       minmax(0, 1fr)
     );
-
   gap: 16px;
+}
+
+.settings-description,
+.settings-note {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.settings-language-select {
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: 9px;
+  background: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 .settings-list {
   display: flex;
   flex-direction: column;
-
   margin-top: 18px;
 }
 
@@ -213,17 +365,8 @@ const theme =
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-
   padding: 13px 0;
-
-  border-bottom:
-    1px solid
-    var(--border-primary);
-}
-
-.setting-row:last-child {
-  border-bottom: 0;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .setting-row div {
@@ -231,58 +374,19 @@ const theme =
   flex-direction: column;
 }
 
-.setting-row strong {
-  font-size: 13px;
-}
-
 .setting-row span {
   color: var(--text-muted);
-  font-size: 10px;
 }
 
-.setting-row input {
-  width: 17px;
-  height: 17px;
-
-  accent-color:
-    var(--accent-primary);
+.setting-row input,
+.theme-options input {
+  accent-color: var(--accent-primary);
 }
 
 .theme-options {
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   margin-top: 18px;
-}
-
-.theme-options label {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-
-  color: var(--text-secondary);
-}
-
-.theme-options input {
-  accent-color:
-    var(--accent-primary);
-}
-
-.settings-note {
-  margin-top: 18px;
-
-  color: var(--text-muted);
-
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-@media (
-  max-width: 750px
-) {
-  .settings-layout {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
