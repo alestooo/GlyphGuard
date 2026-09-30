@@ -1,6 +1,10 @@
+use std::path::PathBuf;
+
 use clap::{Parser, Subcommand};
 
 use glyphguard_core::compare::{ComparisonDifference, compare_strings};
+use glyphguard_core::files::read_text_file;
+use glyphguard_core::findings::Finding;
 use glyphguard_core::inspect::{inspect_graphemes, inspect_scalars};
 use glyphguard_core::normalize::normalize;
 use glyphguard_core::rules::scan_text;
@@ -42,22 +46,36 @@ enum Commands {
         /// Second string.
         right: String,
     },
+
+    /// Scan a UTF-8 text file for Unicode security findings.
+    ScanFile {
+        /// File to scan.
+        path: PathBuf,
+    },
 }
 
 fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Inspect { text } => inspect(&text),
+        Commands::Inspect { text } => {
+            inspect(&text);
+        }
 
         Commands::Normalize { text } => {
             print_normalization(&text);
         }
 
-        Commands::Scan { text } => scan(&text),
+        Commands::Scan { text } => {
+            scan(&text);
+        }
 
         Commands::Compare { left, right } => {
             compare(&left, &right);
+        }
+
+        Commands::ScanFile { path } => {
+            scan_file(&path);
         }
     }
 }
@@ -149,6 +167,49 @@ fn scan(text: &str) {
     println!("{text}");
     println!();
 
+    print_findings(&findings);
+}
+
+fn scan_file(path: &PathBuf) {
+    match read_text_file(path) {
+        Ok(file) => {
+            let findings = scan_text(&file.text);
+
+            println!("GlyphGuard File Scan");
+            println!();
+
+            println!("File:");
+            println!("{}", file.path.display());
+            println!();
+
+            println!("Encoding:");
+            println!("UTF-8");
+            println!();
+
+            println!("UTF-8 BOM:");
+            println!("{}", yes_no(file.has_utf8_bom));
+            println!();
+
+            println!("Bytes:");
+            println!("{}", file.byte_length);
+            println!();
+
+            print_findings(&findings);
+        }
+
+        Err(error) => {
+            eprintln!("GlyphGuard File Scan");
+            eprintln!();
+
+            eprintln!("Error:");
+            eprintln!("{error}");
+
+            std::process::exit(2);
+        }
+    }
+}
+
+fn print_findings(findings: &[Finding]) {
     if findings.is_empty() {
         println!("No findings.");
         return;
@@ -161,8 +222,11 @@ fn scan(text: &str) {
         println!("[{}] {}", finding.rule_id, finding.message);
 
         println!("Severity: {:?}", finding.severity);
+
         println!("Scalar index: {}", finding.scalar_index);
+
         println!("Byte index: {}", finding.byte_index);
+
         println!("Code point: {}", finding.code_point_label());
 
         let unicode_name = finding
@@ -171,6 +235,7 @@ fn scan(text: &str) {
             .unwrap_or("<no Unicode name>");
 
         println!("Unicode name: {unicode_name}");
+
         println!("Escaped: {}", finding.escaped_character());
 
         println!();
