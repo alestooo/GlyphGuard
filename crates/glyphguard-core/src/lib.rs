@@ -1,5 +1,7 @@
+pub mod findings;
 pub mod inspect;
 pub mod normalize;
+pub mod rules;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
