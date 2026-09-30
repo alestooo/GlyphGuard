@@ -1,44 +1,43 @@
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
 }
 
-html,
+html {
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+
 body,
 #app {
   width: 100%;
   min-width: 100%;
-  min-height: 100%;
-  margin: 0;
-}
-
-html {
-  background: var(--bg-app);
-}
-
-body {
-  min-width: 320px;
   min-height: 100vh;
 
   margin: 0;
+}
+
+body {
+  overflow-x: hidden;
 
   background:
-    radial-gradient(
-      circle at top right,
-      rgba(34, 184, 255, 0.06),
-      transparent 28%
-    ),
-    var(--bg-app);
+    var(--bg-primary);
 
-  color: var(--text-primary);
+  color:
+    var(--text-primary);
 
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.5;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 button,
@@ -52,59 +51,373 @@ button {
   color: inherit;
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
+input,
+textarea,
+select {
+  color:
+    var(--text-primary);
+
+  background:
+    var(--input-bg);
+
+  border-color:
+    var(--border-primary);
 }
 
-::selection {
-  background: var(--accent-primary);
-  color: #00131d;
+input::placeholder,
+textarea::placeholder {
+  color:
+    var(--text-muted);
+
+  opacity: 1;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-app);
-}
-
-::-webkit-scrollbar-thumb {
-  background: #253548;
-  border: 2px solid var(--bg-app);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #31465e;
+textarea {
+  caret-color:
+    var(--accent-primary);
 }
 
 code {
-  padding: 2px 6px;
+  padding: 2px 5px;
 
-  border: 1px solid var(--border-primary);
-  border-radius: 6px;
+  border-radius: 5px;
 
-  background: var(--bg-muted);
-  color: #8ad7ff;
+  background:
+    var(--code-bg);
+
+  color:
+    var(--accent-primary);
 
   font-family:
     "Cascadia Code",
-    "JetBrains Mono",
     Consolas,
     monospace;
 }
 
-button {
-  border: 0;
+/* =========================================================
+   PANELS
+========================================================= */
+
+.panel {
+  border:
+    1px solid
+    var(--border-primary);
+
+  background:
+    var(--bg-panel);
+
+  color:
+    var(--text-primary);
+
+  box-shadow:
+    0 8px 22px
+    var(--shadow-color);
+
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.panel-title {
+  color:
+    var(--text-primary);
+}
+
+.panel-description {
+  color:
+    var(--text-secondary);
+}
+
+.panel-label {
+  color:
+    var(--accent-primary);
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-button {
+  border:
+    1px solid
+    var(--accent-primary);
+
+  border-radius: 9px;
+
+  background:
+    var(--primary-button-bg);
+
+  color:
+    var(--primary-button-text);
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease,
+    opacity 140ms ease;
+}
+
+.primary-button:hover:not(:disabled) {
+  background:
+    var(--primary-button-bg-hover);
+
+  transform:
+    translateY(-1px);
+}
+
+.primary-button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+.secondary-button {
+  border:
+    1px solid
+    var(--secondary-button-border);
+
+  border-radius: 9px;
+
+  background:
+    var(--secondary-button-bg);
+
+  color:
+    var(--secondary-button-text);
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background:
+    var(--secondary-button-bg-hover);
+
+  border-color:
+    var(--accent-primary);
+
+  color:
+    var(--text-primary);
+
+  transform:
+    translateY(-1px);
+}
+
+/* =========================================================
+   LIGHT THEME SAFETY OVERRIDES
+========================================================= */
+
+:root[data-theme="light"]
+textarea,
+:root[data-theme="light"]
+input:not(
+  [type="radio"]
+):not(
+  [type="checkbox"]
+),
+:root[data-theme="light"]
+select {
+  background:
+    var(--input-bg);
+
+  color:
+    var(--text-primary);
+}
+
+/*
+ * Algunos componentes antiguos aún tienen fondos
+ * oscuros definidos dentro de estilos scoped.
+ * Estos overrides garantizan coherencia hasta
+ * eliminar todos los hardcodes.
+ */
+
+:root[data-theme="light"]
+.scan-textarea,
+:root[data-theme="light"]
+.compare-textarea,
+:root[data-theme="light"]
+.inspect-textarea,
+:root[data-theme="light"]
+.normalize-textarea {
+  background:
+    var(--input-bg) !important;
+
+  color:
+    var(--text-primary) !important;
+
+  border-color:
+    var(--border-primary) !important;
+}
+
+:root[data-theme="light"]
+.finding-detail,
+:root[data-theme="light"]
+.difference-grid > div,
+:root[data-theme="light"]
+.directory-finding {
+  background:
+    var(--bg-muted) !important;
+
+  color:
+    var(--text-primary) !important;
+}
+
+:root[data-theme="light"]
+.compare-skeletons code {
+  background:
+    var(--code-bg);
+}
+
+:root[data-theme="light"]
+.file-drop-zone {
+  background:
+    transparent !important;
+
+  color:
+    var(--text-primary);
+}
+
+:root[data-theme="light"]
+.scan-input-panel,
+:root[data-theme="light"]
+.normalization-card,
+:root[data-theme="light"]
+.scalar-card,
+:root[data-theme="light"]
+.grapheme-card,
+:root[data-theme="light"]
+.difference-card,
+:root[data-theme="light"]
+.directory-file {
+  color:
+    var(--text-primary);
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background:
+    var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    var(--border-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    var(--text-muted);
+}
+
+/* =========================================================
+   BUTTON THEME FIX
+========================================================= */
+
+.primary-button {
+  background:
+    #22b8ff !important;
+
+  border-color:
+    #22b8ff !important;
+
+  color:
+    #03121a !important;
+}
+
+.primary-button:hover:not(:disabled) {
+  background:
+    #4ac6ff !important;
+
+  border-color:
+    #4ac6ff !important;
+
+  color:
+    #03121a !important;
+}
+
+/* DARK */
+
+:root[data-theme="dark"]
+.secondary-button {
+  background:
+    #111b27 !important;
+
+  border-color:
+    #304256 !important;
+
+  color:
+    #f4f7fb !important;
+}
+
+:root[data-theme="dark"]
+.secondary-button:hover:not(:disabled) {
+  background:
+    #182536 !important;
+
+  border-color:
+    #22b8ff !important;
+
+  color:
+    #ffffff !important;
+}
+
+/* LIGHT */
+
+:root[data-theme="light"]
+.secondary-button {
+  background:
+    #ffffff !important;
+
+  border-color:
+    #9eafbf !important;
+
+  color:
+    #16202b !important;
+}
+
+:root[data-theme="light"]
+.secondary-button:hover:not(:disabled) {
+  background:
+    #edf3f8 !important;
+
+  border-color:
+    #22b8ff !important;
+
+  color:
+    #16202b !important;
+}
+
+/* Disabled button */
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.48 !important;
+
+  cursor:
+    not-allowed !important;
 }

@@ -19,6 +19,15 @@ import type {
   AppLocale,
 } from "../i18n/types";
 
+import {
+  applyTheme,
+  getStoredTheme,
+} from "../theme";
+
+import type {
+  ThemeMode,
+} from "../theme";
+
 const {
   t,
   locale,
@@ -53,7 +62,17 @@ const suspiciousWhitespace =
   ref(true);
 
 const theme =
-  ref("system");
+  ref<ThemeMode>(
+    getStoredTheme(),
+  );
+
+function setTheme(
+  value: ThemeMode,
+) {
+  theme.value = value;
+
+  applyTheme(value);
+}
 </script>
 
 <template>
@@ -72,6 +91,8 @@ const theme =
     />
 
     <div class="settings-layout">
+      <!-- LANGUAGE -->
+
       <article class="panel">
         <span class="panel-label">
           {{
@@ -103,20 +124,20 @@ const theme =
         >
           <option
             v-for="
-              option in localeOptions
+              option
+              in localeOptions
             "
             :key="option.code"
             :value="option.code"
           >
-            {{
-              option.flag
-            }}
             {{
               option.name
             }}
           </option>
         </select>
       </article>
+
+      <!-- RULES -->
 
       <article class="panel">
         <span class="panel-label">
@@ -255,6 +276,8 @@ const theme =
         </p>
       </article>
 
+      <!-- APPEARANCE -->
+
       <article class="panel">
         <span class="panel-label">
           {{
@@ -273,46 +296,106 @@ const theme =
         </h2>
 
         <div class="theme-options">
-          <label>
+          <label
+            class="theme-option"
+            :class="{
+              active:
+                theme ===
+                'system',
+            }"
+          >
             <input
-              v-model="theme"
               type="radio"
+              name="theme"
               value="system"
+              :checked="
+                theme ===
+                'system'
+              "
+              @change="
+                setTheme(
+                  'system',
+                )
+              "
             />
 
-            {{
-              t(
-                "settings.system",
-              )
-            }}
+            <div class="theme-option-copy">
+              <strong>
+                {{
+                  t(
+                    "settings.system",
+                  )
+                }}
+              </strong>
+            </div>
           </label>
 
-          <label>
+          <label
+            class="theme-option"
+            :class="{
+              active:
+                theme ===
+                'dark',
+            }"
+          >
             <input
-              v-model="theme"
               type="radio"
+              name="theme"
               value="dark"
+              :checked="
+                theme ===
+                'dark'
+              "
+              @change="
+                setTheme(
+                  'dark',
+                )
+              "
             />
 
-            {{
-              t(
-                "settings.dark",
-              )
-            }}
+            <div class="theme-option-copy">
+              <strong>
+                {{
+                  t(
+                    "settings.dark",
+                  )
+                }}
+              </strong>
+            </div>
           </label>
 
-          <label>
+          <label
+            class="theme-option"
+            :class="{
+              active:
+                theme ===
+                'light',
+            }"
+          >
             <input
-              v-model="theme"
               type="radio"
+              name="theme"
               value="light"
+              :checked="
+                theme ===
+                'light'
+              "
+              @change="
+                setTheme(
+                  'light',
+                )
+              "
             />
 
-            {{
-              t(
-                "settings.light",
-              )
-            }}
+            <div class="theme-option-copy">
+              <strong>
+                {{
+                  t(
+                    "settings.light",
+                  )
+                }}
+              </strong>
+            </div>
           </label>
         </div>
 
@@ -331,33 +414,63 @@ const theme =
 <style scoped>
 .settings-layout {
   display: grid;
+
   grid-template-columns:
     repeat(
       2,
       minmax(0, 1fr)
     );
+
   gap: 16px;
 }
 
 .settings-description,
 .settings-note {
-  color: var(--text-muted);
+  color:
+    var(--text-muted);
+
+  font-size: 11px;
   line-height: 1.6;
 }
 
 .settings-language-select {
   width: 100%;
+
   margin-top: 14px;
+
   padding: 10px 12px;
-  border: 1px solid var(--border-primary);
+
+  border:
+    1px solid
+    var(--border-primary);
+
   border-radius: 9px;
-  background: var(--bg-muted);
-  color: var(--text-primary);
+
+  outline: none;
+
+  background:
+    var(--bg-muted);
+
+  color:
+    var(--text-primary);
+
+  cursor: pointer;
+}
+
+.settings-language-select:hover {
+  border-color:
+    var(--border-secondary);
+}
+
+.settings-language-select:focus {
+  border-color:
+    var(--accent-primary);
 }
 
 .settings-list {
   display: flex;
   flex-direction: column;
+
   margin-top: 18px;
 }
 
@@ -365,28 +478,153 @@ const theme =
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  gap: 18px;
+
   padding: 13px 0;
-  border-bottom: 1px solid var(--border-primary);
+
+  border-bottom:
+    1px solid
+    var(--border-primary);
+
+  cursor: pointer;
 }
 
-.setting-row div {
+.setting-row:last-child {
+  border-bottom: 0;
+}
+
+.setting-row > div {
   display: flex;
   flex-direction: column;
+
+  gap: 3px;
+}
+
+.setting-row strong {
+  color:
+    var(--text-primary);
+
+  font-size: 13px;
 }
 
 .setting-row span {
-  color: var(--text-muted);
+  color:
+    var(--text-muted);
+
+  font-size: 10px;
 }
 
-.setting-row input,
-.theme-options input {
-  accent-color: var(--accent-primary);
+.setting-row input {
+  width: 17px;
+  height: 17px;
+
+  accent-color:
+    var(--accent-primary);
+
+  cursor: pointer;
 }
 
 .theme-options {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  min-height: 54px;
+
+  padding: 12px;
+
+  border:
+    1px solid
+    var(--border-primary);
+
+  border-radius: 10px;
+
+  background:
+    var(--bg-muted);
+
+  color:
+    var(--text-secondary);
+
+  cursor: pointer;
+
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.theme-option:hover {
+  border-color:
+    var(--border-secondary);
+
+  color:
+    var(--text-primary);
+}
+
+.theme-option.active {
+  border-color:
+    var(--accent-primary);
+
+  background:
+    var(--accent-soft);
+
+  color:
+    var(--text-primary);
+}
+
+.theme-option input {
+  margin: 0;
+
+  accent-color:
+    var(--accent-primary);
+
+  cursor: pointer;
+}
+
+.theme-option-copy {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+}
+
+.theme-option-copy strong {
+  font-size: 12px;
+}
+
+.settings-note {
   margin-top: 18px;
+}
+
+@media (
+  max-width: 850px
+) {
+  .settings-layout {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+@media (
+  max-width: 550px
+) {
+  .theme-options {
+    grid-template-columns:
+      1fr;
+  }
 }
 </style>

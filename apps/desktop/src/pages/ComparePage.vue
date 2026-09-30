@@ -434,19 +434,37 @@ function valueLabel(
 .compare-textarea {
   width: 100%;
   min-height: 130px;
+
   margin-top: 10px;
   padding: 14px;
+
   resize: vertical;
-  border: 1px solid var(--border-primary);
+
+  border:
+    1px solid
+    var(--border-primary);
+
   border-radius: 10px;
+
   outline: none;
-  background: #0a1018;
-  color: var(--text-primary);
+
+  background:
+    var(--input-bg);
+
+  color:
+    var(--text-primary);
+
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
+
   direction: ltr;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
 }
 
 .compare-action {
@@ -515,11 +533,22 @@ function valueLabel(
 .difference-grid > div {
   display: flex;
   flex-direction: column;
+
   gap: 7px;
+
   padding: 13px;
-  border: 1px solid var(--border-primary);
+
+  border:
+    1px solid
+    var(--border-primary);
+
   border-radius: 10px;
-  background: var(--bg-muted);
+
+  background:
+    var(--bg-muted);
+
+  color:
+    var(--text-primary);
 }
 
 .compare-clean {

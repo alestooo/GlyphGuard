@@ -35,14 +35,16 @@ const languageRoot =
   );
 
 const currentLocale =
-  computed(() =>
-    localeOptions.find(
-      (option) =>
-        option.code ===
-        locale.value,
-    ) ??
-    localeOptions[0],
-  );
+  computed(() => {
+    return (
+      localeOptions.find(
+        (option) =>
+          option.code ===
+          locale.value,
+      ) ??
+      localeOptions[0]
+    );
+  });
 
 function toggleLanguageMenu() {
   isOpen.value =
@@ -52,7 +54,9 @@ function toggleLanguageMenu() {
 function selectLanguage(
   code: AppLocale,
 ) {
-  setAppLocale(code);
+  setAppLocale(
+    code,
+  );
 
   isOpen.value =
     false;
@@ -120,9 +124,7 @@ onBeforeUnmount(() => {
             "
           ></span>
 
-          <span
-            class="language-name"
-          >
+          <span class="language-name">
             {{
               currentLocale.name
             }}
@@ -131,7 +133,8 @@ onBeforeUnmount(() => {
           <span
             class="language-chevron"
             :class="{
-              open: isOpen,
+              open:
+                isOpen,
             }"
           >
             ▾
@@ -162,14 +165,19 @@ onBeforeUnmount(() => {
             "
           >
             <span
-              class="language-option-flag fi"
+              class="
+                language-option-flag
+                fi
+              "
               :class="
                 `fi-${option.flag}`
               "
             ></span>
 
             <span
-              class="language-option-name"
+              class="
+                language-option-name
+              "
             >
               {{
                 option.name
@@ -209,6 +217,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .app-header {
   position: relative;
+
   z-index: 40;
 
   display: flex;
@@ -221,28 +230,29 @@ onBeforeUnmount(() => {
 
   border-bottom:
     1px solid
-    var(--border-primary);
+    #213041;
 
   background:
-    rgba(
-      9,
-      16,
-      24,
-      0.96
-    );
+    #0d141d;
+
+  color:
+    #f4f7fb;
 }
 
 .header-context {
   color:
-    var(--text-muted);
+    #8d9aab;
 
   font-size: 11px;
-  letter-spacing: 0.02em;
+
+  letter-spacing:
+    0.02em;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+
   gap: 18px;
 }
 
@@ -253,24 +263,27 @@ onBeforeUnmount(() => {
 .language-trigger {
   display: flex;
   align-items: center;
+
   gap: 9px;
 
-  min-width: 165px;
+  width: 170px;
   height: 36px;
 
-  padding: 0 11px;
+  padding:
+    0
+    11px;
 
   border:
     1px solid
-    var(--border-primary);
+    #304256 !important;
 
   border-radius: 9px;
 
   background:
-    var(--bg-muted);
+    #101925 !important;
 
   color:
-    var(--text-primary);
+    #f4f7fb !important;
 
   cursor: pointer;
 
@@ -281,15 +294,10 @@ onBeforeUnmount(() => {
 
 .language-trigger:hover {
   border-color:
-    var(--accent-primary);
+    #22b8ff !important;
 
   background:
-    rgba(
-      34,
-      184,
-      255,
-      0.05
-    );
+    #142131 !important;
 }
 
 .language-flag,
@@ -297,11 +305,14 @@ onBeforeUnmount(() => {
   width: 20px;
   height: 14px;
 
-  flex: 0 0 auto;
+  flex:
+    0 0 auto;
 
-  border-radius: 2px;
+  border-radius:
+    2px;
 
-  background-size: cover;
+  background-size:
+    cover;
 
   box-shadow:
     0 0 0 1px
@@ -309,7 +320,7 @@ onBeforeUnmount(() => {
       255,
       255,
       255,
-      0.1
+      0.12
     );
 }
 
@@ -317,17 +328,24 @@ onBeforeUnmount(() => {
   flex: 1;
 
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  color:
+    #f4f7fb;
+
+  font-size: 11px;
 
   text-align: left;
 
-  font-size: 11px;
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
 }
 
 .language-chevron {
   color:
-    var(--text-muted);
+    #748092;
 
   font-size: 11px;
 
@@ -343,18 +361,22 @@ onBeforeUnmount(() => {
 .language-menu {
   position: absolute;
 
-  top: calc(100% + 7px);
+  top:
+    calc(
+      100% + 7px
+    );
+
   right: 0;
 
   z-index: 100;
 
-  width: 205px;
+  width: 215px;
 
   padding: 6px;
 
   border:
     1px solid
-    var(--border-primary);
+    #304256;
 
   border-radius: 10px;
 
@@ -374,20 +396,26 @@ onBeforeUnmount(() => {
 .language-option {
   display: flex;
   align-items: center;
+
   gap: 10px;
 
   width: 100%;
 
-  padding: 9px 9px;
+  min-height: 36px;
+
+  padding:
+    8px
+    9px;
 
   border: 0;
+
   border-radius: 7px;
 
   background:
-    transparent;
+    transparent !important;
 
   color:
-    var(--text-secondary);
+    #aeb9c7 !important;
 
   cursor: pointer;
 
@@ -401,10 +429,10 @@ onBeforeUnmount(() => {
       184,
       255,
       0.08
-    );
+    ) !important;
 
   color:
-    var(--text-primary);
+    #ffffff !important;
 }
 
 .language-option.active {
@@ -413,22 +441,24 @@ onBeforeUnmount(() => {
       34,
       184,
       255,
-      0.12
-    );
+      0.14
+    ) !important;
 
   color:
-    var(--text-primary);
+    #ffffff !important;
 }
 
 .language-option-name {
   flex: 1;
+
+  color: inherit;
 
   font-size: 11px;
 }
 
 .language-check {
   color:
-    var(--accent-primary);
+    #22b8ff;
 
   font-size: 12px;
   font-weight: 800;
@@ -437,24 +467,27 @@ onBeforeUnmount(() => {
 .engine-status {
   display: flex;
   align-items: center;
+
   gap: 7px;
 
-  white-space: nowrap;
-
   color:
-    var(--text-secondary);
+    #aeb9c7;
 
   font-size: 11px;
+
+  white-space:
+    nowrap;
 }
 
 .status-dot {
   width: 7px;
   height: 7px;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
   background:
-    var(--success);
+    #43d17a;
 
   box-shadow:
     0 0 0 4px
@@ -469,12 +502,12 @@ onBeforeUnmount(() => {
 @media (
   max-width: 720px
 ) {
-  .language-trigger {
-    min-width: 130px;
-  }
-
   .header-context {
     display: none;
+  }
+
+  .language-trigger {
+    width: 145px;
   }
 }
 </style>

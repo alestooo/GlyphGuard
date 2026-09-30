@@ -79,9 +79,13 @@ function navigate(
 <template>
   <aside class="app-sidebar">
     <div class="brand">
-      <div class="brand-mark">
-        G
-      </div>
+        <div class="brand-mark">
+        <img
+            src="/glyphguard-logo.png"
+            alt=""
+            class="brand-logo"
+        />
+        </div>
 
       <div class="brand-copy">
         <strong>
@@ -196,19 +200,23 @@ function navigate(
 
   padding: 20px 14px 14px;
 
+  overflow: hidden;
+
   border-right:
     1px solid
-    var(--border-primary);
+    #213041;
 
   background:
     #0d1723;
 
-  overflow: hidden;
+  color:
+    #f4f7fb;
 }
 
 .brand {
   display: flex;
   align-items: center;
+
   gap: 13px;
 
   min-height: 56px;
@@ -231,24 +239,23 @@ function navigate(
       34,
       184,
       255,
-      0.45
+      0.35
     );
 
   border-radius: 11px;
 
-  background:
-    rgba(
-      34,
-      184,
-      255,
-      0.13
-    );
+  background: transparent;
 
-  color:
-    var(--accent-primary);
+  overflow: hidden;
+}
 
-  font-size: 14px;
-  font-weight: 800;
+.brand-logo {
+  display: block;
+
+  width: 30px;
+  height: 30px;
+
+  object-fit: contain;
 }
 
 .brand-copy {
@@ -260,7 +267,7 @@ function navigate(
 
 .brand-copy strong {
   color:
-    var(--text-primary);
+    #f4f7fb;
 
   font-size: 14px;
   line-height: 1.25;
@@ -270,7 +277,7 @@ function navigate(
   margin-top: 4px;
 
   color:
-    var(--text-muted);
+    #8d9aab;
 
   font-size: 10px;
 }
@@ -282,7 +289,7 @@ function navigate(
     10px;
 
   color:
-    var(--text-muted);
+    #7d8a9b;
 
   font-size: 9px;
   font-weight: 700;
@@ -323,10 +330,10 @@ function navigate(
   outline: none;
 
   background:
-    transparent;
+    transparent !important;
 
   color:
-    var(--text-secondary);
+    #aeb9c7 !important;
 
   font: inherit;
   font-size: 12px;
@@ -347,11 +354,11 @@ function navigate(
       255,
       255,
       255,
-      0.035
-    );
+      0.05
+    ) !important;
 
   color:
-    var(--text-primary);
+    #ffffff !important;
 }
 
 .sidebar-item.active {
@@ -360,7 +367,7 @@ function navigate(
       34,
       184,
       255,
-      0.28
+      0.42
     );
 
   background:
@@ -368,11 +375,11 @@ function navigate(
       34,
       184,
       255,
-      0.12
-    );
+      0.14
+    ) !important;
 
   color:
-    var(--text-primary);
+    #ffffff !important;
 }
 
 .sidebar-icon {
@@ -386,12 +393,12 @@ function navigate(
 
   border:
     1px solid
-    var(--border-primary);
+    #40536a;
 
   border-radius: 7px;
 
   color:
-    var(--text-muted);
+    #9cabbc;
 
   font-family:
     "Cascadia Code",
@@ -400,14 +407,6 @@ function navigate(
 
   font-size: 8px;
   font-weight: 700;
-
-  letter-spacing:
-    -0.02em;
-
-  transition:
-    border-color 130ms ease,
-    background 130ms ease,
-    color 130ms ease;
 }
 
 .sidebar-item.active
@@ -417,7 +416,7 @@ function navigate(
       34,
       184,
       255,
-      0.4
+      0.5
     );
 
   background:
@@ -429,15 +428,21 @@ function navigate(
     );
 
   color:
-    var(--accent-primary);
+    #22b8ff;
 }
 
 .sidebar-item-text {
   min-width: 0;
 
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  color: inherit;
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
 }
 
 .sidebar-footer {
@@ -459,7 +464,7 @@ function navigate(
     7px;
 
   color:
-    var(--text-muted);
+    #748092;
 
   font-size: 8px;
 }

@@ -8,11 +8,17 @@ import {
   i18n,
 } from "./i18n";
 
+import {
+  initializeTheme,
+} from "./theme";
+
 import "flag-icons/css/flag-icons.min.css";
 
 import "./styles/variables.css";
 import "./styles/global.css";
 import "./styles/layout.css";
+
+initializeTheme();
 
 const app =
   createApp(App);

@@ -1,47 +1,124 @@
 :root {
-  color-scheme: dark;
+  --sidebar-width: 248px;
+  --header-height: 64px;
 
-  --font-sans:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  --bg-app: #080c12;
-  --bg-sidebar: #0b1018;
-  --bg-header: rgba(11, 16, 24, 0.92);
-
-  --bg-panel: #101722;
-  --bg-panel-hover: #131d2a;
-  --bg-muted: #0d141e;
-
-  --border-primary: #1d2937;
-  --border-secondary: #243447;
-
-  --text-primary: #f4f7fb;
-  --text-secondary: #a9b5c5;
-  --text-muted: #6f7d90;
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 15px;
 
   --accent-primary: #22b8ff;
-  --accent-primary-hover: #4cc7ff;
-  --accent-soft: rgba(34, 184, 255, 0.12);
-
   --success: #43d17a;
   --warning: #f6c453;
   --danger: #ff6577;
 
-  --sidebar-width: 248px;
-  --header-height: 64px;
+  /*
+   * Header y sidebar permanecen oscuros
+   * en ambos temas.
+   */
+  --shell-bg: #0d1723;
+  --shell-bg-muted: #101925;
+  --shell-text: #f4f7fb;
+  --shell-text-secondary: #b3bdc9;
+  --shell-text-muted: #748092;
+  --shell-border: #213041;
+}
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+/* =========================================================
+   DARK
+========================================================= */
 
-  --shadow-panel:
-    0 12px 35px rgba(0, 0, 0, 0.18);
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
-  --transition-fast: 160ms ease;
+  --bg-primary: #080e15;
+  --bg-secondary: #0d141d;
+  --bg-panel: #121b27;
+  --bg-panel-hover: #162131;
+  --bg-muted: #0c141e;
+
+  --input-bg: #080f17;
+  --input-bg-hover: #0b131d;
+
+  --text-primary: #f4f7fb;
+  --text-secondary: #b3bdc9;
+  --text-muted: #748092;
+
+  --border-primary: #213041;
+  --border-secondary: #304256;
+
+  --accent-soft: rgba(
+    34,
+    184,
+    255,
+    0.1
+  );
+
+  --primary-button-bg: #22b8ff;
+  --primary-button-bg-hover: #4ac6ff;
+  --primary-button-text: #03121a;
+
+  --secondary-button-bg: #111b27;
+  --secondary-button-bg-hover: #182536;
+  --secondary-button-text: #f4f7fb;
+  --secondary-button-border: #304256;
+
+  --code-bg: #09131d;
+
+  --shadow-color:
+    rgba(
+      0,
+      0,
+      0,
+      0.25
+    );
+}
+
+/* =========================================================
+   LIGHT
+========================================================= */
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-primary: #f4f7fb;
+  --bg-secondary: #edf2f7;
+  --bg-panel: #ffffff;
+  --bg-panel-hover: #f8fafc;
+  --bg-muted: #edf3f8;
+
+  --input-bg: #ffffff;
+  --input-bg-hover: #f8fafc;
+
+  --text-primary: #16202b;
+  --text-secondary: #445467;
+  --text-muted: #748397;
+
+  --border-primary: #d4dee8;
+  --border-secondary: #bdcad7;
+
+  --accent-soft: rgba(
+    34,
+    184,
+    255,
+    0.1
+  );
+
+  --primary-button-bg: #22b8ff;
+  --primary-button-bg-hover: #0daeff;
+  --primary-button-text: #06131b;
+
+  --secondary-button-bg: #ffffff;
+  --secondary-button-bg-hover: #edf3f8;
+  --secondary-button-text: #17202b;
+  --secondary-button-border: #bcc9d6;
+
+  --code-bg: #edf3f8;
+
+  --shadow-color:
+    rgba(
+      21,
+      34,
+      50,
+      0.08
+    );
 }

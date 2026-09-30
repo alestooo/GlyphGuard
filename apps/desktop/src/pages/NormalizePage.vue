@@ -205,21 +205,40 @@ function changeLabel(
 </template>
 
 <style scoped>
+
 .normalize-textarea {
   width: 100%;
   min-height: 130px;
+
   padding: 15px;
-  border: 1px solid var(--border-primary);
+
+  border:
+    1px solid
+    var(--border-primary);
+
   border-radius: 10px;
+
   resize: vertical;
+
   outline: none;
-  background: #0a1018;
-  color: var(--text-primary);
+
+  background:
+    var(--input-bg);
+
+  color:
+    var(--text-primary);
+
   font-family:
     "Cascadia Code",
     Consolas,
     monospace;
+
   direction: ltr;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease;
 }
 
 .normalize-actions {
