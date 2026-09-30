@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {
+  ref,
+} from "vue";
 
 import AppLayout from "./components/layout/AppLayout.vue";
 import PageTitle from "./components/common/PageTitle.vue";
 
+import ComparePage from "./pages/ComparePage.vue";
+import FilesPage from "./pages/FilesPage.vue";
+import InspectorPage from "./pages/InspectorPage.vue";
+import NormalizePage from "./pages/NormalizePage.vue";
 import ScanPage from "./pages/ScanPage.vue";
+import SettingsPage from "./pages/SettingsPage.vue";
 
 type PageName =
   | "dashboard"
@@ -16,7 +23,9 @@ type PageName =
   | "settings";
 
 const activePage =
-  ref<PageName>("dashboard");
+  ref<PageName>(
+    "dashboard",
+  );
 
 function setActivePage(
   page: PageName,
@@ -32,7 +41,8 @@ function setActivePage(
   >
     <section
       v-if="
-        activePage === 'dashboard'
+        activePage ===
+        'dashboard'
       "
       class="page"
     >
@@ -62,7 +72,9 @@ function setActivePage(
             class="primary-button"
             type="button"
             @click="
-              setActivePage('scan')
+              setActivePage(
+                'scan',
+              )
             "
           >
             Open scanner
@@ -88,7 +100,9 @@ function setActivePage(
             class="secondary-button"
             type="button"
             @click="
-              setActivePage('compare')
+              setActivePage(
+                'compare',
+              )
             "
           >
             Compare text
@@ -150,147 +164,34 @@ function setActivePage(
       "
     />
 
-    <section
+    <FilesPage
       v-else-if="
         activePage === 'files'
       "
-      class="page"
-    >
-      <PageTitle
-        title="Files"
-        subtitle="Inspect UTF-8 text files for Unicode security findings."
-      />
+    />
 
-      <div
-        class="
-          panel
-          placeholder-panel
-        "
-      >
-        <h2>
-          File scanner
-        </h2>
-
-        <p>
-          File analysis will be
-          connected next.
-        </p>
-      </div>
-    </section>
-
-    <section
+    <ComparePage
       v-else-if="
         activePage === 'compare'
       "
-      class="page"
-    >
-      <PageTitle
-        title="Compare"
-        subtitle="Compare two strings at the Unicode level."
-      />
+    />
 
-      <div
-        class="
-          panel
-          placeholder-panel
-        "
-      >
-        <h2>
-          Unicode comparison
-        </h2>
-
-        <p>
-          This will use
-          <code>
-            compare_strings()
-          </code>
-          from GlyphGuard Core.
-        </p>
-      </div>
-    </section>
-
-    <section
+    <InspectorPage
       v-else-if="
-        activePage === 'inspector'
+        activePage ===
+        'inspector'
       "
-      class="page"
-    >
-      <PageTitle
-        title="Inspector"
-        subtitle="Inspect code points, UTF-8 bytes and grapheme clusters."
-      />
+    />
 
-      <div
-        class="
-          panel
-          placeholder-panel
-        "
-      >
-        <h2>
-          Unicode inspector
-        </h2>
-
-        <p>
-          Scalar and grapheme
-          information will appear
-          here.
-        </p>
-      </div>
-    </section>
-
-    <section
+    <NormalizePage
       v-else-if="
-        activePage === 'normalize'
+        activePage ===
+        'normalize'
       "
-      class="page"
-    >
-      <PageTitle
-        title="Normalize"
-        subtitle="Inspect NFC, NFD, NFKC and NFKD representations."
-      />
+    />
 
-      <div
-        class="
-          panel
-          placeholder-panel
-        "
-      >
-        <h2>
-          Normalization
-        </h2>
-
-        <p>
-          Unicode normalization
-          results will appear here.
-        </p>
-      </div>
-    </section>
-
-    <section
+    <SettingsPage
       v-else
-      class="page"
-    >
-      <PageTitle
-        title="Settings"
-        subtitle="Configure the GlyphGuard desktop experience."
-      />
-
-      <div
-        class="
-          panel
-          placeholder-panel
-        "
-      >
-        <h2>
-          Settings
-        </h2>
-
-        <p>
-          Rule configuration and
-          appearance settings will
-          be added later.
-        </p>
-      </div>
-    </section>
+    />
   </AppLayout>
 </template>
